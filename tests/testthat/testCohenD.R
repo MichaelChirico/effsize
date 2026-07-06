@@ -2,10 +2,11 @@
 library(effsize)
 
 try_with_time_limit <- function(expr, cpu = Inf, elapsed = Inf){
-  y <- try({setTimeLimit(cpu, elapsed); expr}, silent = TRUE) 
+  setTimeLimit(cpu, elapsed)
+  on.exit(setTimeLimit(cpu = Inf, elapsed = Inf))
+  y <- try(expr, silent = TRUE)
   if(inherits(y, "try-error")) stop("Operation timed out") else y 
 }
-
 
 generate_data <- function(n,m,stdev){
   x <- rnorm(n,m,stdev)
